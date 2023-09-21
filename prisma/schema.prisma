@@ -16,12 +16,12 @@ datasource db {
 
 model User {
   id  Int @id @default(autoincrement())
-  username String @unique
+  email String @unique
   password String
   role Role @default(USER)
   fullname String
-  email String @unique
-  age Int
+  phonenumber String
+  birthday DateTime
   refresh_token String?
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt

@@ -10,8 +10,10 @@ export class UpdateUserDto {
   @IsOptional()
   fullname: string;
 
-  @Min(18)
-  @Max(100)
+  @IsString()
   @IsOptional()
-  age: number;
+  phonenumber: string;
+
+  @IsOptional()
+  birthday: Date;
 }

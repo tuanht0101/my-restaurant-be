@@ -6,7 +6,7 @@ export class UserDto {
   id: number;
 
   @Expose()
-  username: string;
+  email: string;
 
   @Expose()
   role: Role;
@@ -15,5 +15,8 @@ export class UserDto {
   fullname: string;
 
   @Expose()
-  age: number;
+  phonenumber: string;
+
+  @Expose()
+  birthday: Date;
 }
