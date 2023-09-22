@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from './dtos/login-user-dto';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private prisma: PrismaService,
     private JwtService: JwtService,
     private config: ConfigService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async signup(dto: CreateUserDto): Promise<Tokens> {
@@ -104,11 +106,17 @@ export class AuthService {
   }
 
   async getTokens(userId: number, email: string): Promise<Tokens> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
     const [at, rt] = await Promise.all([
       this.JwtService.signAsync(
         {
           sub: userId,
           email,
+          role: user.role,
         },
         {
           secret: this.config.get<string>('AT_SECRET'),
@@ -119,6 +127,7 @@ export class AuthService {
         {
           sub: userId,
           email,
+          role: user.role,
         },
         {
           secret: this.config.get<string>('RT_SECRET'),
@@ -143,6 +152,15 @@ export class AuthService {
       data: {
         refresh_token: hashToken,
       },
+    });
+  }
+
+  sendPassMail(email: string) {
+    this.mailerService.sendMail({
+      to: email,
+      from: 'minhtuanphc203@gmail.com',
+      subject: 'Reset password request from Midtaste Restaurant',
+      html: '<b>Your new password is ... </b>',
     });
   }
 }

@@ -18,6 +18,8 @@ import { RtGuard } from 'src/common/guards/rt.guard';
 import { CurrentUserId } from 'src/common/decorators/current-userId.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
+import { Roles } from 'src/common/decorators/role.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -52,5 +54,10 @@ export class AuthController {
     @CurrentUser('refreshToken') refreshToken: string,
   ) {
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Post('reset-password')
+  sendMail(@Body() body: { email: string }) {
+    return this.authService.sendPassMail(body.email);
   }
 }
