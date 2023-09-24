@@ -21,7 +21,6 @@ model User {
   role Role @default(USER)
   fullname String
   phonenumber String
-  birthday DateTime
   refresh_token String?
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt

@@ -7,6 +7,7 @@ import {
   UseGuards,
   Request,
   Req,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user-dto';
@@ -20,8 +21,11 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { Serialize } from 'src/common/interceptors/serialize.interceptor';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -56,8 +60,21 @@ export class AuthController {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 
+  @Public()
   @Post('reset-password')
   sendMail(@Body() body: { email: string }) {
     return this.authService.sendPassMail(body.email);
+  }
+
+  @Patch('change-password')
+  changePassword(
+    @CurrentUserId() userId: number,
+    @Body() body: { oldPassword: string; newPassword: string },
+  ) {
+    return this.authService.changePassword(
+      userId,
+      body.oldPassword,
+      body.newPassword,
+    );
   }
 }

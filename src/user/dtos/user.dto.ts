@@ -16,7 +16,4 @@ export class UserDto {
 
   @Expose()
   phonenumber: string;
-
-  @Expose()
-  birthday: Date;
 }

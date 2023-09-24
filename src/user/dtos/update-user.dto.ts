@@ -13,7 +13,4 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   phonenumber: string;
-
-  @IsOptional()
-  birthday: Date;
 }

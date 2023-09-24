@@ -33,7 +33,4 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   phonenumber: string;
-
-  @IsDateString()
-  birthday: Date;
 }

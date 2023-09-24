@@ -12,6 +12,7 @@ import { LoginUserDto } from './dtos/login-user-dto';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
+const crypto = require('crypto');
 
 @Injectable()
 export class AuthService {
@@ -42,7 +43,6 @@ export class AuthService {
         role: dto.role,
         fullname: dto.fullname,
         phonenumber: dto.phonenumber,
-        birthday: dto.birthday,
       },
     });
 
@@ -144,7 +144,6 @@ export class AuthService {
 
   async updateRtHash(userId: number, refreshToken: string) {
     const hashToken = await argon.hash(refreshToken);
-
     await this.prisma.user.update({
       where: {
         id: userId,
@@ -155,12 +154,77 @@ export class AuthService {
     });
   }
 
-  sendPassMail(email: string) {
-    this.mailerService.sendMail({
+  async sendPassMail(email: string) {
+    const randomString = this.generateRandomString(8);
+    const hashedPassword = await argon.hash(randomString);
+
+    const isExisted = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!isExisted) throw new NotFoundException('Email not found');
+
+    const user = await this.prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+    await this.mailerService.sendMail({
       to: email,
       from: 'minhtuanphc203@gmail.com',
       subject: 'Reset password request from Midtaste Restaurant',
-      html: '<b>Your new password is ... </b>',
+      html: `<b>Your new password is ${randomString} </b>`,
     });
+
+    return isExisted;
+  }
+
+  async changePassword(id: number, oldPass: string, newPass: string) {
+    const isExistedUser = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!isExistedUser) throw new NotFoundException('User not found');
+
+    const passwordMatches = await argon.verify(isExistedUser.password, oldPass);
+    const newPasswordMatches = await argon.verify(
+      isExistedUser.password,
+      newPass,
+    );
+    if (newPasswordMatches)
+      throw new ForbiddenException(
+        'New password is the same with the current password',
+      );
+    if (!passwordMatches)
+      throw new ForbiddenException('The current password is wrong!!');
+
+    const hashedPassword = await argon.hash(newPass);
+
+    await this.prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    return isExistedUser;
+  }
+
+  generateRandomString(length) {
+    if (length % 2 !== 0) {
+      throw new Error('Length must be an even number');
+    }
+
+    const bytes = crypto.randomBytes(length / 2);
+    return bytes.toString('hex');
   }
 }
