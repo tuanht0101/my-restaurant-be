@@ -25,7 +25,6 @@ import { Serialize } from 'src/common/interceptors/serialize.interceptor';
 import { UserDto } from 'src/user/dtos/user.dto';
 
 @Controller('auth')
-@Serialize(UserDto)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -62,11 +61,13 @@ export class AuthController {
 
   @Public()
   @Post('reset-password')
+  @Serialize(UserDto)
   sendMail(@Body() body: { email: string }) {
     return this.authService.sendPassMail(body.email);
   }
 
   @Patch('change-password')
+  @Serialize(UserDto)
   changePassword(
     @CurrentUserId() userId: number,
     @Body() body: { oldPassword: string; newPassword: string },
