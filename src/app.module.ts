@@ -11,6 +11,7 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guard';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CategoryModule } from './category/category.module';
     MenuModule,
     MenuItemModule,
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [

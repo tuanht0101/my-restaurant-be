@@ -6,6 +6,7 @@ import {
   Get,
   Patch,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
@@ -33,5 +34,12 @@ export class CategoryController {
   @UseGuards(RolesGuard)
   update(@Param('id') id: string, @Body() body: { name: string }) {
     return this.categoryService.updateOneById(parseInt(id), body.name);
+  }
+
+  @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
+  delete(@Param('id') id: string) {
+    return this.categoryService.removeById(parseInt(id));
   }
 }
