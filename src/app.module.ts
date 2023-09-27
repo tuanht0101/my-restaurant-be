@@ -12,6 +12,7 @@ import { AtGuard } from './common/guards/at.guard';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
+import { BillModule } from './bill/bill.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductModule } from './product/product.module';
     MenuItemModule,
     CategoryModule,
     ProductModule,
+    BillModule,
   ],
   controllers: [AppController],
   providers: [

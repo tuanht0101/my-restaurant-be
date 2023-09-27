@@ -54,6 +54,6 @@ model Bill {
   name String
   contactNumber String
   total Int
-  productDetails Json?
+  productDetails Json @db.Json
   createdBy String
 }
