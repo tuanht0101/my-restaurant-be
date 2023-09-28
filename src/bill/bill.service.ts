@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { CreateBillDto } from './dtos/create-bill-dto';
 import { error } from 'console';
+import { GetPdfDto } from './dtos/get-pdf-dto';
 let ejs = require('ejs');
 let pdf = require('html-pdf');
 var uuid = require('uuid');
@@ -67,5 +68,30 @@ export class BillService {
       console.error(error);
       throw new Error('Failed to create bill');
     }
+  }
+
+  async getBills() {
+    const bills = await this.prisma.bill.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    return bills;
+  }
+
+  async deleteById(id: number) {
+    const isExistedBill = await this.prisma.bill.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!isExistedBill) throw new NotFoundException('Bill not found');
+    await this.prisma.bill.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
