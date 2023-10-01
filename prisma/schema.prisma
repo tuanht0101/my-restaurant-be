@@ -56,4 +56,18 @@ model Bill {
   total Int
   productDetails Json
   createdBy String
+  createdAt DateTime @default(now())
+  
+  @@map("bills")
+}
+
+model Table {
+  id  Int @id @default(autoincrement())
+  name String
+  capacity Int
+  isPrivate Boolean
+  isAvailable Boolean @default(true)
+  isActive Boolean @default(true)
+
+  @@map("tables")
 }
