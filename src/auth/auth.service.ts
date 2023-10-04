@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   NotFoundException,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user-dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -23,7 +24,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
   ) {}
 
-  async signup(dto: CreateUserDto): Promise<Tokens> {
+  async signup(dto: CreateUserDto) {
     const hashedPassword = await argon.hash(dto.password);
 
     const isExistedEmail = await this.prisma.user.findFirst({
@@ -46,9 +47,10 @@ export class AuthService {
       },
     });
 
-    const tokens = await this.getTokens(newUser.id, newUser.email);
-    await this.updateRtHash(newUser.id, tokens.refresh_token);
-    return tokens;
+    // const tokens = await this.getTokens(newUser.id, newUser.email);
+    // await this.updateRtHash(newUser.id, tokens.refresh_token);
+    // return tokens;
+    return newUser;
   }
 
   async signin(dto: LoginUserDto): Promise<Tokens> {
@@ -154,7 +156,7 @@ export class AuthService {
     });
   }
 
-  async sendPassMail(email: string) {
+  async sendPassMail(email: string, phonenumber: string) {
     const randomString = this.generateRandomString(8);
     const hashedPassword = await argon.hash(randomString);
 
@@ -165,6 +167,12 @@ export class AuthService {
     });
 
     if (!isExisted) throw new NotFoundException('Email not found');
+
+    if (isExisted.phonenumber !== phonenumber)
+      throw new BadRequestException('Wrong phonenumber!', {
+        cause: new Error(),
+        description: 'Some error description',
+      });
 
     const user = await this.prisma.user.update({
       where: {

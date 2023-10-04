@@ -30,8 +30,9 @@ export class AuthController {
 
   @Public()
   @Post('signup')
+  @Serialize(UserDto)
   @HttpCode(HttpStatus.CREATED)
-  signup(@Body() body: CreateUserDto): Promise<Tokens> {
+  signup(@Body() body: CreateUserDto) {
     return this.authService.signup(body);
   }
 
@@ -62,8 +63,8 @@ export class AuthController {
   @Public()
   @Post('reset-password')
   @Serialize(UserDto)
-  sendMail(@Body() body: { email: string }) {
-    return this.authService.sendPassMail(body.email);
+  sendMail(@Body() body: { email: string; phonenumber: string }) {
+    return this.authService.sendPassMail(body.email, body.phonenumber);
   }
 
   @Patch('change-password')

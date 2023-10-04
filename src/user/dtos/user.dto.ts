@@ -16,4 +16,7 @@ export class UserDto {
 
   @Expose()
   phonenumber: string;
+
+  @Expose()
+  createdAt: Date;
 }
