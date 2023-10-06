@@ -5,6 +5,12 @@ enum Role {
   ADMIN
 }
 
+enum BillStatus {
+  CANCELLED
+  PENDING
+  DONE
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -51,10 +57,12 @@ model Product {
 model Bill {
   id  Int @id @default(autoincrement())
   uuid String
-  name String
-  contactNumber String
+  guessName String
+  guessNumber String
   total Int
   productDetails Json
+  tableName String
+  status BillStatus @default(PENDING)
   createdBy String
   createdAt DateTime @default(now())
   

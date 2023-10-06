@@ -28,10 +28,11 @@ export class BillService {
       const bill = await this.prisma.bill.create({
         data: {
           uuid: generatedUuid,
-          name: dto.name,
-          contactNumber: dto.contactNumber,
+          guessName: dto.guessName,
+          guessNumber: dto.guessNumber,
           total: dto.total,
           productDetails: dto.productDetails,
+          tableName: dto.tableName,
           createdBy: user.email,
         },
       });
@@ -44,8 +45,8 @@ export class BillService {
       );
       const renderedHtml = await ejs.renderFile(templatePath, {
         productDetails: productDetails,
-        name: dto.name,
-        contactNumber: dto.contactNumber,
+        name: dto.guessName,
+        contactNumber: dto.guessNumber,
         totalAmount: dto.total,
       });
 

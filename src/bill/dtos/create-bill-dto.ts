@@ -1,13 +1,21 @@
-import { IsJSON, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { BillStatus } from '@prisma/client';
+import {
+  IsEnum,
+  IsJSON,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateBillDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  guessName: string;
 
   @IsString()
   @IsNotEmpty()
-  contactNumber: string;
+  guessNumber: string;
 
   @IsNumber()
   total: number;
@@ -15,4 +23,12 @@ export class CreateBillDto {
   @IsString()
   @IsJSON()
   productDetails: string;
+
+  @IsString()
+  @IsNotEmpty()
+  tableName: string;
+
+  @IsEnum(BillStatus)
+  @IsOptional()
+  status: BillStatus;
 }
