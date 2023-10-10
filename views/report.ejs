@@ -20,10 +20,12 @@
     <h3 style="text-align: center">Midtaste Restaurant</h3>
     <table>
       <tr>
-        <th>Name: <%= name %></th>
+        <th>Name: <%= guessName %></th>
+        <th>Status: <%= status %></th>
       </tr>
       <tr>
-        <th>Contact Number: <%= contactNumber %></th>
+        <th>Contact Number: <%= guessNumber %></th>
+        <th>Table: <%= tableName %></th>
       </tr>
     </table>
 
@@ -48,6 +50,7 @@
       <% }); %> <% } %>
     </table>
     <h3>Total: <%= totalAmount %></h3>
+    <h3>Date: <%= date %></h3>
     <h3>
       Thank you for supporting our restaurant. If there is some problems, we
       would love to take some advice from you at admin@midtaste.com

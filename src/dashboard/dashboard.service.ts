@@ -52,6 +52,7 @@ export class DashboardService {
 
     const bills = await this.prisma.bill.findMany({
       where: {
+        status: 'DONE',
         createdAt: {
           gte: startDate,
           lt: endDate,
