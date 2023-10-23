@@ -2,17 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { CreateBillDto } from './dtos/create-bill-dto';
-import { error } from 'console';
-import { GetPdfDto } from './dtos/get-pdf-dto';
 import { Response } from 'express';
 import { format } from 'date-fns';
-import { GetBillByStatus } from './dtos/get-bill-by-status.dto';
+import { GetPdfDto } from './dtos/get-pdf-dto';
 import { BillStatus } from 'src/common/enums/billStatus.enum';
-let ejs = require('ejs');
-let pdf = require('html-pdf');
-var uuid = require('uuid');
-let path = require('path');
-var fs = require('fs');
+import { Prisma, Bill } from '@prisma/client';
+import * as ejs from 'ejs';
+import * as pdf from 'html-pdf';
+import * as uuid from 'uuid';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class BillService {
@@ -42,11 +41,7 @@ export class BillService {
       });
 
       // Render the EJS template
-      const templatePath = await path.join(
-        __dirname,
-        '../../views/',
-        'report.ejs',
-      );
+      const templatePath = path.join(__dirname, '../../views/', 'report.ejs');
       const renderedHtml = await ejs.renderFile(templatePath, {
         productDetails: productDetails,
         guessName: dto.guessName,
@@ -122,11 +117,7 @@ export class BillService {
 
     const productDetails = JSON.parse(body.productDetails);
 
-    const templatePath = await path.join(
-      __dirname,
-      '../../views/',
-      'report.ejs',
-    );
+    const templatePath = path.join(__dirname, '../../views/', 'report.ejs');
     const renderedHtml = await ejs.renderFile(templatePath, {
       productDetails: productDetails,
       guessName: body.guessName,

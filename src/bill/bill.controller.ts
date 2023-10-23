@@ -38,7 +38,7 @@ export class BillController {
     return this.billService.getBills();
   }
 
-  @Get()
+  @Get('status')
   getBillsByStatus(@Body() body: GetBillByStatus) {
     return this.billService.getBillsByStatus(body.status);
   }

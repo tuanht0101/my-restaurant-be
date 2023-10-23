@@ -1,4 +1,4 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { GetTotalByDateDto } from './dtos/get-total-by-date.dto';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -14,10 +14,15 @@ export class DashboardController {
     return this.dashboardService.getDetails();
   }
 
-  @Get('totals')
+  @Post('totals')
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
   getTotals(@Body() body: GetTotalByDateDto) {
     return this.dashboardService.getTotalByDate(body);
+  }
+
+  @Get('chart')
+  getCharts() {
+    return this.dashboardService.getTotalBillsForCurrentAndLastYear();
   }
 }

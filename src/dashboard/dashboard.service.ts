@@ -16,11 +16,13 @@ export class DashboardService {
     const categoryCount = await this.prisma.category.count();
     const productCount = await this.prisma.product.count();
     const billCount = await this.prisma.bill.count();
+    const tableCount = await this.prisma.table.count();
 
     return {
       category: categoryCount,
       product: productCount,
       bill: billCount,
+      table: tableCount,
     };
   }
 
@@ -66,5 +68,47 @@ export class DashboardService {
     );
 
     return totals;
+  }
+
+  async getTotalBillsByMonth(year: number): Promise<number[]> {
+    const totals: number[] = [];
+
+    for (let month = 1; month <= 12; month++) {
+      const startDate = new Date(year, month - 1, 1, 0, 0, 0, 0); // Adjust month to zero-based index
+      const endDate =
+        month === 12
+          ? new Date(year + 1, 0, 1, 0, 0, 0, 0) // Start of next year
+          : new Date(year, month, 1, 0, 0, 0, 0);
+
+      const totalForMonth = await this.prisma.bill.aggregate({
+        _sum: {
+          total: true,
+        },
+        where: {
+          createdAt: {
+            gte: startDate,
+            lt: endDate,
+          },
+        },
+      });
+
+      totals.push(totalForMonth._sum?.total || 0);
+    }
+
+    return totals;
+  }
+  async getTotalBillsForCurrentAndLastYear(): Promise<{
+    thisYear: number[];
+    lastYear: number[];
+  }> {
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear - 1;
+
+    const thisYearTotals = await this.getTotalBillsByMonth(currentYear);
+    const lastYearTotals = await this.getTotalBillsByMonth(lastYear);
+    return {
+      thisYear: thisYearTotals,
+      lastYear: lastYearTotals,
+    };
   }
 }
