@@ -7,6 +7,10 @@ import {
   Get,
   Param,
   Patch,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dtos/create-table-dto';
@@ -15,7 +19,10 @@ import { UpdateStatusDto } from './dtos/update-status-dto';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { FilteredTableDto } from './dtos/filtered-table-dto';
+import { NumberTransformInterceptor } from 'src/common/interceptors/number-transform.interceptor';
 
+@UsePipes(new ValidationPipe({ transform: true }))
 @Controller('table')
 export class TableController {
   constructor(private tableService: TableService) {}
@@ -24,6 +31,7 @@ export class TableController {
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
   create(@Body() dto: CreateTableDto) {
+    console.log(dto);
     return this.tableService.create(dto);
   }
 
@@ -35,6 +43,11 @@ export class TableController {
   @Get(':id')
   getById(@Param('id') id: string) {
     return this.tableService.getById(parseInt(id));
+  }
+
+  @Post('/filter')
+  async findTables(@Body() body: FilteredTableDto): Promise<any[]> {
+    return await this.tableService.findTables(body);
   }
 
   @Patch(':id')
