@@ -68,4 +68,11 @@ export class TableController {
   deleteById(@Param('id') id: string) {
     return this.tableService.deleteById(parseInt(id));
   }
+
+  @Post('deleteMany')
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
+  deleteListById(@Body() body: { idList: number[] }) {
+    return this.tableService.deleteListById(body.idList);
+  }
 }
