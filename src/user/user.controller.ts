@@ -11,6 +11,8 @@ import { UserService } from './user.service';
 import { Serialize } from 'src/common/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { FilteredUserDto } from './dtos/filtered-user-dto';
+import { CurrentUserId } from 'src/common/decorators/current-userId.decorator';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -25,6 +27,14 @@ export class UserController {
   @Get(':id')
   getOne(@Param('id') id: string) {
     return this.userService.findOneById(parseInt(id));
+  }
+
+  @Post('/filter')
+  async findTables(
+    @CurrentUserId() id: number,
+    @Body() body: FilteredUserDto,
+  ): Promise<any[]> {
+    return await this.userService.findFilteredUsers(body, id);
   }
 
   @Patch(':id')

@@ -30,7 +30,11 @@ export class TableService {
   }
 
   async getAll() {
-    const tables = await this.prisma.table.findMany();
+    const tables = await this.prisma.table.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
 
     return tables;
   }
@@ -86,6 +90,9 @@ export class TableService {
 
       const filteredTables = await this.prisma.table.findMany({
         where,
+        orderBy: {
+          name: 'asc',
+        },
       });
 
       return filteredTables;

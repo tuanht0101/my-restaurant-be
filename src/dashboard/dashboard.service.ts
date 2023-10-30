@@ -85,6 +85,7 @@ export class DashboardService {
           total: true,
         },
         where: {
+          status: 'DONE',
           createdAt: {
             gte: startDate,
             lt: endDate,
