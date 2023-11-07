@@ -15,7 +15,9 @@ export class CategoryService {
 
   async getAll() {
     const categories = await this.prisma.category.findMany({
-      orderBy: { name: 'desc' },
+      orderBy: {
+        id: 'asc',
+      },
     });
 
     return categories;
@@ -55,6 +57,29 @@ export class CategoryService {
     return cate;
   }
 
+  async findFilteredDatas(name: string): Promise<any[]> {
+    try {
+      const where: any = {
+        name: {
+          contains: name || undefined,
+          mode: 'insensitive',
+        },
+      };
+
+      const filteredDatas = await this.prisma.category.findMany({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+      return filteredDatas;
+    } catch (error) {
+      console.error('Error filtering tables:', error);
+      throw error;
+    }
+  }
+
   async removeById(id: number) {
     if (!id) {
       return null;
@@ -68,5 +93,21 @@ export class CategoryService {
         id,
       },
     });
+  }
+
+  async deleteListById(idList: number[]) {
+    try {
+      await this.prisma.category.deleteMany({
+        where: {
+          id: {
+            in: idList,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting records:', error);
+      console.log('123', idList);
+      throw new Error('Error deleting records');
+    }
   }
 }

@@ -88,7 +88,9 @@ export class UserService {
         id,
       },
       data: {
-        ...dto,
+        fullname: dto.fullname,
+        role: dto.role,
+        phonenumber: dto.phonenumber,
       },
     });
 
@@ -110,5 +112,21 @@ export class UserService {
         id,
       },
     });
+  }
+
+  async deleteListById(idList: number[]) {
+    try {
+      await this.prisma.user.deleteMany({
+        where: {
+          id: {
+            in: idList,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting records:', error);
+      console.log('123', idList);
+      throw new Error('Error deleting records');
+    }
   }
 }

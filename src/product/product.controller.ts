@@ -20,8 +20,6 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post()
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   create(@Body() body: CreateProductDto) {
     return this.productService.create(body);
   }
@@ -41,23 +39,22 @@ export class ProductController {
     return this.productService.getByCategory(parseInt(id));
   }
 
+  @Post('/filter')
+  async findDatas(@Body() body: { name: string }): Promise<any[]> {
+    return await this.productService.findFilteredDatas(body.name);
+  }
+
   @Patch(':id')
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   update(@Param('id') id: string, @Body() body: UpdateProductDto) {
     return this.productService.update(parseInt(id), body);
   }
 
   @Patch('updateStatus/:id')
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
     return this.productService.updateStatus(parseInt(id), body.status);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   delete(@Param('id') id: string) {
     return this.productService.delete(parseInt(id));
   }

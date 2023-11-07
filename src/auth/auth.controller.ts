@@ -8,6 +8,7 @@ import {
   Request,
   Req,
   Patch,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user-dto';
@@ -41,6 +42,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   signin(@Body() body: LoginUserDto): Promise<Tokens> {
     return this.authService.signin(body);
+  }
+
+  @Get('whoami')
+  whoami(@CurrentUserId() userId: number) {
+    return this.authService.whoAmI(userId);
   }
 
   @UseGuards(AtGuard)

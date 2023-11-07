@@ -18,8 +18,6 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post()
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   create(@Body() body: { name: string }) {
     return this.categoryService.create(body.name);
   }
@@ -29,17 +27,28 @@ export class CategoryController {
     return this.categoryService.getAll();
   }
 
+  @Get(':id')
+  getOne(@Param('id') id: string) {
+    return this.categoryService.findOneById(parseInt(id));
+  }
+
+  @Post('/filter')
+  async findTables(@Body() body: { name: string }): Promise<any[]> {
+    return await this.categoryService.findFilteredDatas(body.name);
+  }
+
   @Patch(':id')
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   update(@Param('id') id: string, @Body() body: { name: string }) {
     return this.categoryService.updateOneById(parseInt(id), body.name);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   delete(@Param('id') id: string) {
     return this.categoryService.removeById(parseInt(id));
+  }
+
+  @Post('deleteMany')
+  deleteListById(@Body() body: { idList: number[] }) {
+    return this.categoryService.deleteListById(body.idList);
   }
 }

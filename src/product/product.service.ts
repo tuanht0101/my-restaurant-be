@@ -70,7 +70,6 @@ export class ProductService {
     const products = await this.prisma.product.findMany({
       where: {
         categoryId: id,
-        status: 'true',
       },
       include: {
         category: {
@@ -82,6 +81,29 @@ export class ProductService {
     });
 
     return products;
+  }
+
+  async findFilteredDatas(name: string): Promise<any[]> {
+    try {
+      const where: any = {
+        name: {
+          contains: name || undefined,
+          mode: 'insensitive',
+        },
+      };
+
+      const filteredDatas = await this.prisma.product.findMany({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+      return filteredDatas;
+    } catch (error) {
+      console.error('Error filtering tables:', error);
+      throw error;
+    }
   }
 
   async update(id: number, dto: UpdateProductDto) {

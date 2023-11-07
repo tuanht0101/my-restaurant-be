@@ -74,6 +74,16 @@ export class AuthService {
     return tokens;
   }
 
+  async whoAmI(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return user;
+  }
+
   async logout(userId: number) {
     await this.prisma.user.updateMany({
       where: {
