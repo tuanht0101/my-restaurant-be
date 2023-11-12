@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-product-dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryService } from 'src/category/category.service';
@@ -16,6 +20,14 @@ export class ProductService {
     );
     if (!isCategoryExisted)
       throw new NotFoundException('There is no category that you provided!');
+
+    const isExistedProduct = await this.prisma.product.findFirst({
+      where: {
+        name: dto.name,
+      },
+    });
+
+    if (isExistedProduct) throw new BadRequestException('Product existed!');
 
     const product = await this.prisma.product.create({
       data: {

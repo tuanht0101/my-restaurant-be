@@ -15,7 +15,11 @@ export class DashboardService {
   async getDetails() {
     const categoryCount = await this.prisma.category.count();
     const productCount = await this.prisma.product.count();
-    const billCount = await this.prisma.bill.count();
+    const billCount = await this.prisma.bill.count({
+      where: {
+        status: 'DONE',
+      },
+    });
     const tableCount = await this.prisma.table.count();
 
     return {

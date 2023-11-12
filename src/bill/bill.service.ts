@@ -12,6 +12,7 @@ import * as pdf from 'html-pdf';
 import * as uuid from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs';
+import { FilteredBillDto } from './dtos/filtered-bill.dto';
 
 @Injectable()
 export class BillService {
@@ -96,6 +97,57 @@ export class BillService {
     return bills;
   }
 
+  async findFilteredBills(dto: FilteredBillDto) {
+    try {
+      const where: any = {
+        guessName: {
+          contains: dto.guessName || undefined,
+          mode: 'insensitive',
+        },
+      };
+
+      if (dto.guessNumber !== undefined) {
+        where.guessNumber = {
+          contains: dto.guessNumber || undefined,
+        };
+      }
+
+      if (dto.status !== undefined) {
+        where.status = dto.status || undefined;
+      }
+
+      // Filter by date range
+      if (dto.startDate && dto.endDate) {
+        where.createdAt = {
+          gte: dto.startDate,
+          lte: dto.endDate,
+        };
+      } else if (dto.startDate) {
+        // Only startDate is picked
+        where.createdAt = {
+          gte: dto.startDate,
+        };
+      } else if (dto.endDate) {
+        // Only endDate is picked
+        where.createdAt = {
+          lte: dto.endDate,
+        };
+      }
+
+      const filteredTables = await this.prisma.bill.findMany({
+        where,
+        orderBy: {
+          id: 'desc',
+        },
+      });
+
+      return filteredTables;
+    } catch (error) {
+      console.error('Error filtering tables:', error);
+      throw error;
+    }
+  }
+
   async updateBillStatus(id: number, status: BillStatus) {
     const bill = await this.getBillById(id);
     const updatedBill = await this.prisma.bill.update({
@@ -174,5 +226,21 @@ export class BillService {
         id,
       },
     });
+  }
+
+  async deleteListById(idList: number[]) {
+    try {
+      await this.prisma.bill.deleteMany({
+        where: {
+          id: {
+            in: idList,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting records:', error);
+      console.log('123', idList);
+      throw new Error('Error deleting records');
+    }
   }
 }

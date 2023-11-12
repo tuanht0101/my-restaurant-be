@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTableDto } from './dtos/create-table-dto';
 import { UpdateTableDto } from './dtos/update-table-dto';
@@ -10,6 +14,14 @@ export class TableService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateTableDto) {
+    const isExistedTable = await this.prisma.table.findFirst({
+      where: {
+        name: dto.name,
+      },
+    });
+
+    if (isExistedTable) throw new BadRequestException('Table existed!');
+
     try {
       dto.capacity = parseInt(dto.capacity as any, 10);
       const table = await this.prisma.table.create({
