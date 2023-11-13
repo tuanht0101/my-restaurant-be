@@ -13,6 +13,7 @@ import * as uuid from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs';
 import { FilteredBillDto } from './dtos/filtered-bill.dto';
+import { UpdateBillDto } from './dtos/update-bill.dto';
 
 @Injectable()
 export class BillService {
@@ -150,12 +151,35 @@ export class BillService {
 
   async updateBillStatus(id: number, status: BillStatus) {
     const bill = await this.getBillById(id);
+    if (!bill) throw new NotFoundException('Bill not found ');
+
     const updatedBill = await this.prisma.bill.update({
       where: {
         id,
       },
       data: {
         status,
+      },
+    });
+
+    return updatedBill;
+  }
+
+  async updateBill(id: number, dto: UpdateBillDto) {
+    const bill = await this.getBillById(id);
+    if (!bill) throw new NotFoundException('Bill not found ');
+
+    const updatedBill = await this.prisma.bill.update({
+      where: {
+        id,
+      },
+      data: {
+        guessName: dto.guessName,
+        guessNumber: dto.guessNumber,
+        total: dto.total,
+        productDetails: dto.productDetails,
+        tableName: dto.tableName,
+        status: dto.status,
       },
     });
 

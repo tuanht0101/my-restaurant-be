@@ -19,6 +19,7 @@ import { FilteredBillDto } from './dtos/filtered-bill.dto';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { UpdateBillDto } from './dtos/update-bill.dto';
 
 @Controller('bill')
 export class BillController {
@@ -73,6 +74,11 @@ export class BillController {
   }
 
   @Patch(':id')
+  updateBill(@Param('id') id: string, @Body() body: UpdateBillDto) {
+    return this.billService.updateBill(parseInt(id), body);
+  }
+
+  @Patch('status/:id')
   updateStatus(@Param('id') id: string, @Body() body: GetBillByStatus) {
     return this.billService.updateBillStatus(parseInt(id), body.status);
   }
