@@ -118,6 +118,17 @@ export class TableService {
     const table = await this.getById(id);
     if (!table) throw new NotFoundException('Table not found ');
 
+    const isExistedTable = await this.prisma.table.findFirst({
+      where: {
+        name: dto.name,
+        id: {
+          not: id,
+        },
+      },
+    });
+
+    if (isExistedTable) throw new BadRequestException('Table existed!');
+
     await this.prisma.table.update({
       where: {
         id,

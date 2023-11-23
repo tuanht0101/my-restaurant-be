@@ -39,6 +39,11 @@ export class ProductController {
     return this.productService.getByCategory(parseInt(id));
   }
 
+  @Get('/getAvailableByCategory/:id')
+  getAvailableByCategory(@Param('id') id: string) {
+    return this.productService.getAvailableByCategory(parseInt(id));
+  }
+
   @Post('/filter')
   async findDatas(@Body() body: { name: string }): Promise<any[]> {
     return await this.productService.findFilteredDatas(body.name);

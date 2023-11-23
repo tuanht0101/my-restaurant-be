@@ -95,6 +95,28 @@ export class ProductService {
     return products;
   }
 
+  async getAvailableByCategory(id: number) {
+    const isCategoryExisted = await this.categoryService.findOneById(id);
+    if (!isCategoryExisted)
+      throw new NotFoundException('There is no category that you provided!');
+
+    const products = await this.prisma.product.findMany({
+      where: {
+        categoryId: id,
+        status: 'Available',
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return products;
+  }
+
   async findFilteredDatas(name: string): Promise<any[]> {
     try {
       const where: any = {
@@ -121,6 +143,17 @@ export class ProductService {
   async update(id: number, dto: UpdateProductDto) {
     const product = await this.getById(id);
     if (!product) throw new NotFoundException('Product not found ');
+
+    const isExistedProduct = await this.prisma.product.findFirst({
+      where: {
+        name: dto.name,
+        id: {
+          not: id,
+        },
+      },
+    });
+
+    if (isExistedProduct) throw new BadRequestException('Product existed!');
 
     await this.prisma.product.update({
       where: {

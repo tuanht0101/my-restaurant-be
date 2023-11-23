@@ -39,6 +39,14 @@ export class CategoryService {
     const cate = await this.findOneById(id);
     if (!cate) throw new NotFoundException('Category not found');
 
+    const isExistedCategory = await this.prisma.category.findFirst({
+      where: {
+        name: name,
+      },
+    });
+
+    if (isExistedCategory) throw new BadRequestException('Category existed!');
+
     await this.prisma.category.updateMany({
       where: {
         id,

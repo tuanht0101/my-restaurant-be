@@ -1,5 +1,11 @@
-version: '3'
+version: '3.8'
 services:
+  api:
+    container_name: api
+    build:
+      context: .
+    ports:
+      - 6868:6868
   db:
     container_name: postgres
     restart: always
