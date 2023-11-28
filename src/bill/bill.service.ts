@@ -43,29 +43,29 @@ export class BillService {
       });
 
       // Render the EJS template
-      const templatePath = path.join(__dirname, '../../views/', 'report.ejs');
-      const renderedHtml = await ejs.renderFile(templatePath, {
-        productDetails: productDetails,
-        guessName: dto.guessName,
-        status: dto.status,
-        guessNumber: dto.guessNumber,
-        tableName: dto.tableName,
-        totalAmount: dto.total,
-        date: format(bill.createdAt, 'HH:mm:ss MMMM dd, yyyy'),
-      });
+      // const templatePath = path.join(__dirname, '../../views/', 'report.ejs');
+      // const renderedHtml = await ejs.renderFile(templatePath, {
+      //   productDetails: productDetails,
+      //   guessName: dto.guessName,
+      //   status: dto.status,
+      //   guessNumber: dto.guessNumber,
+      //   tableName: dto.tableName,
+      //   totalAmount: dto.total,
+      //   date: format(bill.createdAt, 'HH:mm:ss MMMM dd, yyyy'),
+      // });
 
-      // Generate the PDF
-      const pdfPath = `./generated_pdf/${generatedUuid}.pdf`;
-      await new Promise<void>((resolve, reject) => {
-        pdf.create(renderedHtml).toFile(pdfPath, (err, data) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
+      // // Generate the PDF
+      // const pdfPath = `./generated_pdf/${generatedUuid}.pdf`;
+      // await new Promise<void>((resolve, reject) => {
+      //   pdf.create(renderedHtml).toFile(pdfPath, (err, data) => {
+      //     if (err) {
+      //       console.error(err);
+      //       reject(err);
+      //     } else {
+      //       resolve();
+      //     }
+      //   });
+      // });
 
       return { uuid: generatedUuid };
     } catch (error) {
@@ -263,7 +263,6 @@ export class BillService {
       });
     } catch (error) {
       console.error('Error deleting records:', error);
-      console.log('123', idList);
       throw new Error('Error deleting records');
     }
   }

@@ -1,13 +1,17 @@
 version: '3.8'
 services:
   api:
-    container_name: api
     build:
       context: .
     ports:
       - 6868:6868
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:tuan1234@db:5432/myrestaurant?schema=public
+      AT_SECRET: at-secret
+      RT_SECRET: rt-secret
   db:
-    container_name: postgres
     restart: always
     image: postgres:12
     volumes:

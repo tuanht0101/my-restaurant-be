@@ -125,7 +125,6 @@ export class UserService {
       });
     } catch (error) {
       console.error('Error deleting records:', error);
-      console.log('123', idList);
       throw new Error('Error deleting records');
     }
   }

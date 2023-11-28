@@ -33,11 +33,9 @@ export class TableService {
           isActive: dto.isActive,
         },
       });
-      console.log(dto);
       return table;
     } catch (error) {
       console.log(error);
-      console.log(dto);
     }
   }
 
@@ -186,7 +184,6 @@ export class TableService {
       });
     } catch (error) {
       console.error('Error deleting records:', error);
-      console.log('123', idList);
       throw new Error('Error deleting records');
     }
   }

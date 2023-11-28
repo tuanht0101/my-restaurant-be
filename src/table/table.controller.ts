@@ -31,7 +31,6 @@ export class TableController {
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
   create(@Body() dto: CreateTableDto) {
-    console.log(dto);
     return this.tableService.create(dto);
   }
 
