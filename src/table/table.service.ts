@@ -62,7 +62,7 @@ export class TableService {
     return table;
   }
 
-  async findTables(dto: FilteredTableDto): Promise<any[]> {
+  async findFilteredTables(dto: FilteredTableDto): Promise<any[]> {
     try {
       const where: any = {
         name: {

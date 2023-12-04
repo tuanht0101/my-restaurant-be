@@ -31,6 +31,7 @@ export class UserService {
 
     return user;
   }
+
   async findFilteredUsers(
     dto: FilteredUserDto,
     currentUserId: number,
