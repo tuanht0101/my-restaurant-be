@@ -46,7 +46,7 @@ export class TableController {
 
   @Post('/filter')
   async findTables(@Body() body: FilteredTableDto): Promise<any[]> {
-    return await this.tableService.findTables(body);
+    return await this.tableService.findFilteredTables(body);
   }
 
   @Patch(':id')

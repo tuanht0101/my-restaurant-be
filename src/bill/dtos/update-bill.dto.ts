@@ -26,7 +26,7 @@ export class UpdateBillDto {
   @IsString()
   @IsJSON()
   @IsOptional()
-  productDetails: string;
+  productDetails: any;
 
   @IsString()
   @IsNotEmpty()

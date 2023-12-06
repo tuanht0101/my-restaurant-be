@@ -29,14 +29,14 @@ export class BillService {
     const generatedUuid = uuid.v1();
 
     try {
-      const productDetails = JSON.parse(dto.productDetails);
+      const parsedProductDetails = JSON.parse(dto.productDetails);
       const bill = await this.prisma.bill.create({
         data: {
           uuid: generatedUuid,
           guessName: dto.guessName,
           guessNumber: dto.guessNumber,
           total: dto.total,
-          productDetails: dto.productDetails,
+          productDetails: parsedProductDetails,
           tableName: dto.tableName,
           createdBy: user.email,
         },
@@ -168,22 +168,26 @@ export class BillService {
   async updateBill(id: number, dto: UpdateBillDto) {
     const bill = await this.getBillById(id);
     if (!bill) throw new NotFoundException('Bill not found ');
+    const parsedProductDetails = JSON.parse(dto.productDetails);
 
-    const updatedBill = await this.prisma.bill.update({
-      where: {
-        id,
-      },
-      data: {
-        guessName: dto.guessName,
-        guessNumber: dto.guessNumber,
-        total: dto.total,
-        productDetails: dto.productDetails,
-        tableName: dto.tableName,
-        status: dto.status,
-      },
-    });
-
-    return updatedBill;
+    try {
+      const updatedBill = await this.prisma.bill.update({
+        where: {
+          id,
+        },
+        data: {
+          guessName: dto.guessName,
+          guessNumber: dto.guessNumber,
+          total: dto.total,
+          productDetails: parsedProductDetails,
+          tableName: dto.tableName,
+          status: dto.status,
+        },
+      });
+      return updatedBill;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getPdf(res: Response, userId: number, body: GetPdfDto) {

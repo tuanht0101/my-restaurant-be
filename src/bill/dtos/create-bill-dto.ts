@@ -22,7 +22,7 @@ export class CreateBillDto {
 
   @IsString()
   @IsJSON()
-  productDetails: string;
+  productDetails: any;
 
   @IsString()
   @IsNotEmpty()
