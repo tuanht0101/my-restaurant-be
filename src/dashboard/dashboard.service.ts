@@ -127,10 +127,7 @@ export class DashboardService {
         ? new Date(currentYear + 1, 0, 1, 0, 0, 0, 0) // Start of next year
         : new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
 
-    const totalForCurrentMonth = await this.prisma.bill.aggregate({
-      _sum: {
-        total: true,
-      },
+    const totalBillsForCurrentMonth = await this.prisma.bill.count({
       where: {
         status: 'DONE',
         createdAt: {
@@ -140,6 +137,6 @@ export class DashboardService {
       },
     });
 
-    return totalForCurrentMonth._sum?.total || 0;
+    return totalBillsForCurrentMonth;
   }
 }
