@@ -25,4 +25,9 @@ export class DashboardController {
   getCharts() {
     return this.dashboardService.getTotalBillsForCurrentAndLastYear();
   }
+
+  @Get('billCurrentMonth')
+  getBill() {
+    return this.dashboardService.getBillCurrentMonth();
+  }
 }

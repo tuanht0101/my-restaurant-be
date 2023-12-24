@@ -116,4 +116,30 @@ export class DashboardService {
       lastYear: lastYearTotals,
     };
   }
+
+  async getBillCurrentMonth(): Promise<number> {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // Adjust month to one-based index
+
+    const startDate = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0); // Adjust month to zero-based index
+    const endDate =
+      currentMonth === 12
+        ? new Date(currentYear + 1, 0, 1, 0, 0, 0, 0) // Start of next year
+        : new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
+
+    const totalForCurrentMonth = await this.prisma.bill.aggregate({
+      _sum: {
+        total: true,
+      },
+      where: {
+        status: 'DONE',
+        createdAt: {
+          gte: startDate,
+          lt: endDate,
+        },
+      },
+    });
+
+    return totalForCurrentMonth._sum?.total || 0;
+  }
 }

@@ -34,7 +34,7 @@ export class AuthService {
     });
 
     if (isExistedEmail) {
-      throw new BadRequestException('User đã tồn tại');
+      throw new BadRequestException('User existed');
     }
 
     const newUser = await this.prisma.user.create({
